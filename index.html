@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mind Armor (Tester)</title>
+  <meta name="description" content="A comforting, professional PWA to help you build confidence and calm, one module at a time." />
+  <meta name="theme-color" content="#1e293b" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="row" style="gap:10px;align-items:baseline;">
+            <h1 id="brandName">Mind Armor</h1>
+            <span class="badge">Tester build</span>
+            <span id="planBadge" class="badge" style="display:none;"></span>
+          </div>
+          <div class="kicker">Comforting tools. Private by default.</div>
+        </div>
+      </div>
+      <nav style="margin-top:10px">
+        <button data-section="dashboard" class="active">Dashboard</button>
+        <button data-section="coach">AI Coach</button>
+        <button data-section="settings">Settings</button>
+        <button data-section="privacy">Privacy & Data</button>
+        <button id="installBtn" class="btn secondary" style="margin-left:auto">Install</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Dashboard -->
+    <section id="dashboard" class="section active">
+      <div class="grid">
+        <div class="card">
+          <h2>Your Armor Progress</h2>
+          <p>Complete challenges to forge your full set of armor. The first module is unlocked. Others can be unlocked via micro-purchase, subscription, or tester toggle.</p>
+          <div class="progress" aria-label="Armor completion">
+            <div id="armorProgress" style="width:0%"></div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="testerUnlockAll">Tester: Unlock all</button>
+            <button class="btn secondary" id="simulatePurchase">Simulate purchase</button>
+          </div>
+          <p class="helper">Tester tips: “Simulate purchase” sets plan to <em>Hero’s Guild</em> (subscription). “Unlock all” toggles all modules as owned.</p>
+        </div>
+
+        <!-- Modules -->
+        <div class="card" id="mod-confidence">
+          <div class="row" style="justify-content:space-between">
+            <h3><span class="module-name" data-key="confidence">Confidence Shield</span></h3>
+            <span class="badge">Free</span>
+          </div>
+          <p>3‑minute daily check-in and micro‑dares to build self-trust.</p>
+          <div class="row">
+            <button class="btn" data-open="confidence">Open</button>
+            <button class="btn secondary" data-unlock="confidence">Unlock+</button>
+          </div>
+        </div>
+
+        <div class="card locked" id="mod-speaking">
+          <div class="lock-overlay">
+            <strong>Locked</strong>
+            <span class="small">Clarity Helm (Public Speaking)</span>
+            <button class="btn gold" data-unlock="speaking">Unlock</button>
+          </div>
+          <div aria-hidden="true">
+            <h3><span class="module-name" data-key="speaking">Clarity Helm</span></h3>
+            <p>Record a snippet and get instant pacing & filler-word stats.</p>
+          </div>
+        </div>
+
+        <div class="card locked" id="mod-urges">
+          <div class="lock-overlay">
+            <strong>Locked</strong>
+            <span class="small">Focus Gauntlets (Urge Control)</span>
+            <button class="btn gold" data-unlock="urges">Unlock</button>
+          </div>
+          <div aria-hidden="true">
+            <h3><span class="module-name" data-key="urges">Focus Gauntlets</span></h3>
+            <p>Urgency breaker with breathing guide and instant “distraction mode”.</p>
+          </div>
+        </div>
+
+        <div class="card locked" id="mod-social">
+          <div class="lock-overlay">
+            <strong>Locked</strong>
+            <span class="small">Charm Boots (Social Ease)</span>
+            <button class="btn gold" data-unlock="social">Unlock</button>
+          </div>
+          <div aria-hidden="true">
+            <h3><span class="module-name" data-key="social">Charm Boots</span></h3>
+            <p>Discreet prompts, grounding nudges, post‑event wins review.</p>
+          </div>
+        </div>
+
+        <div class="card locked" id="mod-bedrock">
+          <div class="lock-overlay">
+            <strong>Locked</strong>
+            <span class="small">BedRock (Intimacy Confidence)</span>
+            <button class="btn gold" data-unlock="bedrock">Unlock</button>
+          </div>
+          <div aria-hidden="true">
+            <h3><span class="module-name" data-key="bedrock">BedRock</span></h3>
+            <p>Breathing & communication practice for sex‑positive confidence.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Confidence Module -->
+    <section id="confidence" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Confidence Shield</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>3‑minute Check‑In</h3>
+          <label for="conf-journal">What did you do right today?</label>
+          <textarea id="conf-journal" rows="5" placeholder="Write a win, however small..."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="conf-save">Save & Count Streak</button>
+            <button class="btn secondary" id="conf-view-logs">View Logs</button>
+          </div>
+          <p class="helper">Daily saves increase your streak once per day.</p>
+        </div>
+        <div class="card">
+          <h3>Streak</h3>
+          <p>Current streak: <strong id="conf-streak">0</strong> days</p>
+          <div class="progress"><div id="conf-streak-bar" style="width:0%"></div></div>
+          <p class="helper">Earn medals at 7, 14, 30 days.</p>
+        </div>
+        <div class="card">
+          <h3>Micro‑Dare</h3>
+          <p id="conf-dare">Introduce yourself to a colleague and ask one curiosity question.</p>
+          <div class="row">
+            <button class="btn secondary" id="conf-new-dare">New Dare</button>
+            <button class="btn" id="conf-complete-dare">Mark Complete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Speaking Module -->
+    <section id="speaking" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Clarity Helm (Public Speaking)</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Record & Analyze</h3>
+          <p>Record up to 60 seconds. This tester simulates basic analysis (pace & filler words).</p>
+          <div class="row">
+            <button class="btn" id="rec-start">Start</button>
+            <button class="btn secondary" id="rec-stop">Stop</button>
+          </div>
+          <audio id="rec-audio" controls></audio>
+        </div>
+        <div class="card">
+          <h3>Results</h3>
+          <p>Words/min: <strong id="wpm">0</strong></p>
+          <p>Filler words detected: <strong id="fillers">0</strong></p>
+          <p class="helper">Target pace: 120–160 wpm. Practice clarity, slow down at commas.</p>
+        </div>
+        <div class="card">
+          <h3>Drill</h3>
+          <p id="speaking-drill">Read a paragraph while pausing for a full breath at every comma.</p>
+          <button class="btn secondary" id="speaking-new-drill">New Drill</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Urge Control Module -->
+    <section id="urges" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Focus Gauntlets (Urge Control)</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Emergency Distraction</h3>
+          <p>Tap to start a 60‑second pattern break with 4‑7‑8 breathing.</p>
+          <button class="btn" id="start-breathe">Start Guide</button>
+          <div id="breathe-stage" style="margin-top:8px"></div>
+        </div>
+        <div class="card">
+          <h3>Urge Log</h3>
+          <label for="urge-note">What triggered the urge?</label>
+          <textarea id="urge-note" rows="4" placeholder="Late-night boredom, stress after work, etc."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="urge-save">Log & Build Streak</button>
+            <button class="btn secondary" id="urge-view">View Logs</button>
+          </div>
+          <p>Streak: <strong id="urge-streak">0</strong> days</p>
+          <div class="progress"><div id="urge-streak-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Ease Module -->
+    <section id="social" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Charm Boots (Social Ease)</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Conversation Starters</h3>
+          <ul id="starters" class="clean"></ul>
+          <button class="btn secondary" id="new-starter">New Starter</button>
+        </div>
+        <div class="card">
+          <h3>Grounding</h3>
+          <p>Try this: 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste.</p>
+          <button class="btn" id="ground-now">Start Grounding Timer</button>
+          <p id="ground-status"></p>
+        </div>
+        <div class="card">
+          <h3>Post‑Event Wins</h3>
+          <label for="wins">Name one thing you did right:</label>
+          <input id="wins" type="text" placeholder="E.g., I asked a follow‑up question" />
+          <button class="btn" id="save-win" style="margin-top:8px">Save Win</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BedRock Module -->
+    <section id="bedrock" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">BedRock (Intimacy Confidence)</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Calm & Breathe</h3>
+          <p>Try box breathing for 60 seconds before intimacy.</p>
+          <button class="btn" id="box-breathe">Start Box Breathing</button>
+          <p id="box-status"></p>
+        </div>
+        <div class="card">
+          <h3>Communication Practice</h3>
+          <label for="bed-script">Practice saying what you want with kindness:</label>
+          <textarea id="bed-script" rows="4" placeholder="I feel most connected when... Could we try..."></textarea>
+          <button class="btn" id="bed-save" style="margin-top:8px">Save Practice</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Coach -->
+    <section id="coach" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">AI Blacksmith (Coach)</h2>
+      </div>
+      <div class="card">
+        <div class="row">
+          <input id="coach-input" type="text" placeholder="Tell me what you’re struggling with..." />
+          <button class="btn" id="coach-send">Ask</button>
+        </div>
+        <div id="coach-log" style="margin-top:10px"></div>
+        <p class="helper">Tester note: responses are rule‑based locally (no server). You’ll wire in your AI endpoint later.</p>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Settings</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Stealth & Customisation</h3>
+          <div class="toggle">
+            <input type="checkbox" id="stealth-title" />
+            <label for="stealth-title">Use decoy app name (Daily Focus)</label>
+          </div>
+          <hr/>
+          <h3>Rename Modules</h3>
+          <div class="row">
+            <label for="rename-key">Module</label>
+            <select id="rename-key">
+              <option value="confidence">Confidence Shield</option>
+              <option value="speaking">Clarity Helm</option>
+              <option value="urges">Focus Gauntlets</option>
+              <option value="social">Charm Boots</option>
+              <option value="bedrock">BedRock</option>
+            </select>
+          </div>
+          <label for="rename-value">New Name</label>
+          <input id="rename-value" type="text" placeholder="e.g., Daily Focus" />
+          <button class="btn" id="rename-apply" style="margin-top:8px">Apply</button>
+        </div>
+
+        <div class="card">
+          <h3>Notifications</h3>
+          <p>Send a test notification.</p>
+          <button class="btn" id="notify">Notify me now</button>
+          <p class="helper">Persistent scheduling requires a server; this tester shows basics.</p>
+        </div>
+
+        <div class="card">
+          <h3>Plans & Payments</h3>
+          <p>Current plan: <strong id="planLabel">Recruit (Free)</strong></p>
+          <div class="row">
+            <button class="btn gold" id="choose-bundle">Hero’s Guild (£7.99/mo)</button>
+            <button class="btn secondary" id="choose-lifetime">Master’s Path (Lifetime)</button>
+          </div>
+          <p class="helper">Wire your PayPal or Stripe later. In tester mode, these buttons simulate unlocking.</p>
+          <hr/>
+          <h3>PayPal Button (Placeholder)</h3>
+          <p class="helper">Replace the action URL with your PayPal link when ready.</p>
+          <form action="https://www.paypal.com/ncp/payment/REPLACE_ME" method="post" target="_blank">
+            <input type="submit" class="btn gold" value="Pay with PayPal (Demo)" />
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy & Data -->
+    <section id="privacy" class="section">
+      <div class="row">
+        <button class="btn secondary" data-section="dashboard">← Back</button>
+        <h2 style="margin-left:8px">Privacy & Data</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Export / Import</h3>
+          <div class="row">
+            <button class="btn" id="export-data">Export JSON</button>
+            <input type="file" id="import-file" accept="application/json" />
+            <button class="btn secondary" id="import-data">Import</button>
+          </div>
+          <p class="helper">All data is local to your device in this tester build.</p>
+        </div>
+        <div class="card">
+          <h3>Data Deletion</h3>
+          <p>Erase all local data and reset the app.</p>
+          <button class="btn danger" id="wipe">Erase Everything</button>
+        </div>
+        <div class="card">
+          <h3>Legal</h3>
+          <p>This is a tester build for evaluation. Not a medical device or therapy service. For serious concerns, contact a licensed professional.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div>© 2025 Mind Armor · <small class="mono">Tester build</small></div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal" id="unlockModal">
+    <div class="sheet">
+      <h3>Unlock Module</h3>
+      <p>Choose how to unlock this module:</p>
+      <div class="row">
+        <button class="btn gold" id="unlock-bundle">Join Hero’s Guild (All modules)</button>
+        <button class="btn secondary" id="unlock-single">Unlock this module (£2.49)</button>
+      </div>
+      <p class="helper">Tester build: buttons simulate unlock; wire to your payment processor later.</p>
+      <div class="row" style="justify-content:flex-end;margin-top:8px">
+        <button class="btn secondary" id="unlock-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
